@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Costco Protein Value Index</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111;
+    --border: #222;
+    --accent: #c8f135;
+    --blue: #38bdf8;
+    --accent2: #ff6b35;
+    --red: #f87171;
+    --text: #f0f0f0;
+    --muted: #555;
+    --gold: #ffd700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    background-image: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(200,241,53,0.07) 0%, transparent 60%);
+  }
+
+  header { text-align: center; margin-bottom: 36px; }
+
+  h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(44px, 7vw, 88px);
+    letter-spacing: 4px;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent) 0%, #8ec700 60%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .costco-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1a0a00;
+    border: 1px solid #e31837;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #e31837;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  .method-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    max-width: 1150px;
+    margin: 0 auto 28px;
+  }
+  @media(max-width: 750px) { .method-grid { grid-template-columns: 1fr; } }
+
+  .method-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .method-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+  .method-card.cal::before { background: var(--accent); }
+  .method-card.dollar::before { background: var(--blue); }
+  .method-card.composite::before { background: linear-gradient(90deg, var(--accent), var(--blue)); }
+
+  .method-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+  .method-card.cal .method-label { color:var(--accent); }
+  .method-card.dollar .method-label { color:var(--blue); }
+  .method-card.composite .method-label { color:#a78bfa; }
+  .method-formula { font-family:'DM Mono',monospace; font-size:12px; color:var(--text); margin-bottom:5px; line-height:1.5; }
+  .method-desc { font-size:11px; color:var(--muted); line-height:1.6; }
+
+  .weight-control {
+    max-width: 1150px;
+    margin: 0 auto 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .weight-label { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); white-space:nowrap; }
+  .slider-wrap { flex:1; display:flex; align-items:center; gap:12px; min-width:220px; }
+  .slider-end { font-family:'DM Mono',monospace; font-size:10px; white-space:nowrap; line-height:1.4; text-align:center; }
+  .slider-end.cal { color:var(--accent); }
+  .slider-end.dollar { color:var(--blue); }
+  input[type=range] {
+    flex:1; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer;
+    background: linear-gradient(90deg, var(--accent) var(--fill,50%), var(--blue) var(--fill,50%));
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:16px; height:16px; border-radius:50%;
+    background:#fff; border:2px solid #2a2a2a; box-shadow:0 0 10px rgba(200,241,53,.35); cursor:pointer;
+  }
+  .weight-display { font-family:'Bebas Neue',cursive; font-size:17px; white-space:nowrap; min-width:160px; text-align:right; }
+
+  .legend {
+    display:flex; justify-content:center; gap:22px; margin-bottom:20px; flex-wrap:wrap;
+  }
+  .legend-item { display:flex; align-items:center; gap:7px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+  .legend-dot { width:8px; height:8px; border-radius:50%; }
+
+  .table-wrapper { max-width:1150px; margin:0 auto; overflow-x:auto; }
+
+  table { width:100%; border-collapse:collapse; }
+
+  thead th {
+    font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px;
+    color:var(--muted); padding:10px 11px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  thead th.num { text-align:right; }
+  thead th.price-col { color:#aaa !important; }
+
+  tbody tr { border-bottom:1px solid #161616; transition:background .12s; animation:fadeIn .3s ease both; }
+  tbody tr:hover { background:#141414; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+  td { padding:11px 11px; font-size:13px; vertical-align:middle; }
+
+  td.rank-cell { font-family:'Bebas Neue',cursive; font-size:24px; color:var(--muted); width:42px; padding-right:4px; }
+  tr.top1 td.rank-cell { color:var(--gold); }
+  tr.top2 td.rank-cell { color:#c0c0c0; }
+  tr.top3 td.rank-cell { color:#cd7f32; }
+
+  .food-name { font-weight:600; font-size:13px; line-height:1.3; }
+  .food-sub { font-size:10px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
+
+  .special-tag {
+    display:inline-block; background:var(--accent2); color:#fff; font-family:'DM Mono',monospace;
+    font-size:8px; letter-spacing:1px; text-transform:uppercase; padding:2px 5px; border-radius:2px; margin-left:6px; vertical-align:middle;
+  }
+
+  td.num { text-align:right; font-family:'DM Mono',monospace; font-size:12px; }
+  td.price-td { text-align:right; font-family:'DM Mono',monospace; font-size:11px; color:#888; }
+
+  .rank-badge { display:inline-block; font-family:'DM Mono',monospace; font-size:11px; padding:2px 7px; border-radius:3px; }
+  .cal-badge { background:rgba(200,241,53,.07); color:var(--accent); border:1px solid rgba(200,241,53,.18); }
+  .dollar-badge { background:rgba(56,189,248,.07); color:var(--blue); border:1px solid rgba(56,189,248,.18); }
+
+  .composite-num { font-family:'Bebas Neue',cursive; font-size:22px; }
+
+  .tier-pill { display:inline-block; padding:2px 8px; border-radius:2px; font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1px; white-space:nowrap; }
+  .tier-s { background:rgba(200,241,53,.1); color:var(--accent); border:1px solid rgba(200,241,53,.22); }
+  .tier-a { background:rgba(100,220,100,.07); color:#64dc64; border:1px solid rgba(100,220,100,.18); }
+  .tier-b { background:rgba(255,200,50,.07); color:#ffc832; border:1px solid rgba(255,200,50,.18); }
+  .tier-c { background:rgba(255,107,53,.07); color:var(--accent2); border:1px solid rgba(255,107,53,.18); }
+  .tier-special { background:rgba(255,107,53,.18); color:#ff9060; border:1px solid rgba(255,107,53,.38); }
+
+  .bars-col { display:flex; flex-direction:column; gap:5px; min-width:90px; }
+  .bar-row { display:flex; align-items:center; gap:5px; }
+  .bar-lbl { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px; text-transform:uppercase; width:10px; }
+  .bar-lbl.c { color:var(--accent); }
+  .bar-lbl.d { color:var(--blue); }
+  .mini-bar { flex:1; background:#1c1c1c; border-radius:2px; height:5px; overflow:hidden; }
+  .mini-fill-c { height:100%; background:var(--accent); border-radius:2px; }
+  .mini-fill-d { height:100%; background:var(--blue); border-radius:2px; }
+
+  .price-source {
+    max-width:1150px; margin:0 auto 20px;
+    background: #0d0d0d;
+    border: 1px solid #1e1e1e;
+    border-radius: 6px;
+    padding: 14px 20px;
+  }
+
+  .price-source-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#e31837; margin-bottom:10px; }
+  .price-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:6px 24px; }
+  .price-item { font-family:'DM Mono',monospace; font-size:10px; color:#444; line-height:1.6; }
+  .price-item span { color:#666; }
+
+  .footnote {
+    max-width:1150px; margin:22px auto 0; font-family:'DM Mono',monospace;
+    font-size:10px; color:#333; line-height:1.9; border-top:1px solid var(--border); padding-top:16px;
+  }
+  .footnote a { color:#555; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Costco Protein Value Index</h1>
+  <p class="subtitle">Dual-Rank System · Real Costco Prices · Adjustable Weighting</p>
+  <div class="costco-badge">🏷️ All prices sourced from Costco / Kirkland Signature 2024–2025</div>
+</header>
+
+<div class="method-grid">
+  <div class="method-card cal">
+    <div class="method-label">📊 Rank A — Calorie Efficiency</div>
+    <div class="method-formula">Protein (g) ÷ 100 calories</div>
+    <div class="method-desc">How much protein per calorie eaten. Best for cutting diets where calories are the hard constraint.</div>
+  </div>
+  <div class="method-card dollar">
+    <div class="method-label">💵 Rank B — Budget Efficiency</div>
+    <div class="method-formula">Protein (g) ÷ $1 spent (Costco)</div>
+    <div class="method-desc">How much protein per dollar at Costco bulk prices. Best when food budget is the constraint.</div>
+  </div>
+  <div class="method-card composite">
+    <div class="method-label">⚡ Composite — Weighted Average</div>
+    <div class="method-formula">Weighted avg of normalized scores</div>
+    <div class="method-desc">Both ranks normalized 0–100 then blended. Use the slider to shift between calorie and budget priority.</div>
+  </div>
+</div>
+
+<div class="weight-control">
+  <span class="weight-label">Priority</span>
+  <div class="slider-wrap">
+    <span class="slider-end cal">Calories<br>Only</span>
+    <input type="range" id="slider" min="0" max="100" value="50" step="5">
+    <span class="slider-end dollar">Budget<br>Only</span>
+  </div>
+  <div class="weight-display" id="wDisplay">
+    <span style="color:var(--accent)">50%</span> Cal &nbsp;/&nbsp; <span style="color:var(--blue)">50%</span> Budget
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>S-Tier ≥ 80</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#64dc64"></div>A-Tier 60–79</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffc832"></div>B-Tier 40–59</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div>C-Tier &lt;40</div>
+</div>
+
+<div class="price-source">
+  <div class="price-source-title">📍 Costco Price Sources (2024–2025 Kirkland / warehouse pricing)</div>
+  <div class="price-grid">
+    <div class="price-item">Chicken Breast — <span>$3.39/lb (Chowhound Dec 2025)</span></div>
+    <div class="price-item">Canned Tuna 8×7oz — <span>$18.99/box</span></div>
+    <div class="price-item">Rotisserie Chicken — <span>$5.00/bird (whole)</span></div>
+    <div class="price-item">Egg Whites 6×16oz — <span>~$10.99/box</span></div>
+    <div class="price-item">Greek Yogurt 48oz — <span>~$7.99/tub (Kirkland)</span></div>
+    <div class="price-item">Cottage Cheese large — <span>~$8.99/tub</span></div>
+    <div class="price-item">Tilapia frozen 3lb — <span>$7.56/lb (FinanceBuzz Nov 2025)</span></div>
+    <div class="price-item">Shrimp frozen raw — <span>~$9.00/lb</span></div>
+    <div class="price-item">Canned Salmon 6pk — <span>~$10.99/box</span></div>
+    <div class="price-item">Sardines 5-pack — <span>$7.99/box</span></div>
+    <div class="price-item">Turkey Breast deli — <span>~$11/lb (Kirkland)</span></div>
+    <div class="price-item">Pork Loin boneless — <span>~$3.49/lb</span></div>
+    <div class="price-item">Ground Beef 93% lean — <span>~$5.99/lb</span></div>
+    <div class="price-item">Whey Protein 5.5lb — <span>$68 (Optimum Nutrition)</span></div>
+    <div class="price-item">Hard Boiled Eggs 32ct — <span>~$11/pack</span></div>
+    <div class="price-item">Lentils dried 4lb — <span>~$6.99/bag</span></div>
+    <div class="price-item">Edamame frozen 4lb — <span>~$7.99/bag</span></div>
+    <div class="price-item">Tofu firm large — <span>~$5.99/pack (~2.5lb)</span></div>
+    <div class="price-item">Black Beans 8×15oz — <span>~$7.99/case</span></div>
+    <div class="price-item">Skim Milk gallon — <span>~$4.99/gallon</span></div>
+  </div>
+</div>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Food (Costco/Kirkland)</th>
+        <th class="num" style="color:var(--accent)">Protein<br>/100 cal (g)</th>
+        <th class="num" style="color:var(--accent)">Cal<br>Rank</th>
+        <th class="num price-col">Cost<br>/100 cal</th>
+        <th class="num" style="color:var(--blue)">Protein<br>/$ (g)</th>
+        <th class="num" style="color:var(--blue)">Budget<br>Rank</th>
+        <th class="num">Composite<br>Score</th>
+        <th>Tier</th>
+        <th>Bars</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="footnote">
+  * All prices are Costco/Kirkland Signature warehouse prices, 2024–2025. Prices vary by location and season.<br>
+  * Protein/100 cal and cost/100 cal derived from standard nutritional data + Costco unit prices.<br>
+  * Protein/$ = grams of protein you get per $1 spent at Costco. Cost/100 cal = what 100 calories of that food costs.<br>
+  * Costco Rotisserie Chicken: $5.00/bird · ~1,000 edible cal · ~100g usable protein → 10g/100cal · 20g/$1.<br>
+  * Composite = weighted average of normalized Cal Score (0–100) and Budget Score (0–100). Drag slider to adjust.<br>
+  * Lentils not sold pre-cooked at Costco; price based on dried bulk. All others available in-warehouse as noted.
+</div>
+
+<script>
+// [name, sub, protein_per_100cal, cost_per_100cal, special]
+// Cost/100cal calculated from: (costco_price_per_unit) / (total_calories_in_unit) * 100
+const raw = [
+  // Egg whites: $10.99 for 6×16oz = 96oz = 2721g. 3 tbsp (46g) = 25 cal, 5g protein → 100cal needs 184g. Cost per 100cal = 10.99/(2721/184) = $0.74. Protein/100cal = 20g.
+  ["Egg Whites",              "Kirkland Signature · 6×16oz · cage free",           20.0, 0.74, false],
+
+  // Canned tuna: $18.99 for 8×7oz = 56oz = 1587g. Per 56g (2oz drained) = 60cal, 13g. Per 100cal = 21.7g. Total cal ≈ 1680. Cost/100cal = 18.99/16.8 = $1.13.
+  ["Canned Tuna",             "Kirkland / Chicken of Sea · 8×7oz · in water",      21.7, 1.13, false],
+
+  // Chicken breast: $3.39/lb. 1lb = 454g raw. Per 100g raw = 110cal, 23g protein. 1lb = 499cal. Cost/100cal = 3.39/4.99 = $0.68. Protein/100cal = 20.9g.
+  ["Chicken Breast",          "Kirkland · boneless skinless · $3.39/lb",            20.9, 0.68, false],
+
+  // Tilapia: $7.56/lb. Per 100g = 96cal, 20g protein. 1lb = 435cal. Cost/100cal = 7.56/4.35 = $1.74. Protein/100cal = 20.8g.
+  ["Tilapia (frozen)",        "Kirkland · frozen loins · $7.56/lb",                20.8, 1.74, false],
+
+  // Shrimp: ~$9/lb frozen raw. Per 100g = 99cal, 24g protein. 1lb = 449cal. Cost/100cal = 9.00/4.49 = $2.00. Protein/100cal = 24.2g.
+  ["Shrimp (frozen raw)",     "Kirkland Wild Argentine · ~$9/lb",                  24.2, 2.00, false],
+
+  // Canned salmon: $10.99 for 6×6oz cans = 36oz = 1020g. Per 85g = 130cal, 17g. Total cal≈1938. Cost/100cal = 10.99/19.4 = $0.57. Protein/100cal = 13.1g.
+  ["Canned Salmon",           "Kirkland · 6×6oz · wild pink Alaska",               13.1, 0.57, false],
+
+  // Greek yogurt: $7.99 / 48oz = 1360g. Per 2/3 cup (170g) = 90cal, 18g protein. Total cal≈720. Cost/100cal = 7.99/7.2 = $1.11. Protein/100cal = 20g.
+  ["Nonfat Greek Yogurt",     "Kirkland Organic · 48oz · plain",                   20.0, 1.11, false],
+
+  // Cottage cheese: $8.99 / large tub ~48oz = 1360g. Per 1/2 cup (113g) = 90cal, 13g. Total cal≈1080. Cost/100cal = 8.99/10.8 = $0.83. Protein/100cal = 14.4g.
+  ["Cottage Cheese",          "Darigold / Kirkland · large tub · lowfat",          14.4, 0.83, false],
+
+  // Sardines: $7.99 / 5×3.75oz cans = 18.75oz = 531g. Per can (106g) = 190cal, 23g. Total cal ≈ 950. Cost/100cal = 7.99/9.5 = $0.84. Protein/100cal = 12.1g.
+  ["Sardines (canned)",       "Kirkland · 5×3.75oz · in water",                   12.1, 0.84, false],
+
+  // Turkey breast deli: ~$11/lb Kirkland. Per 2oz (56g) = 60cal, 10g. 1lb = 7 servings = 420cal. Cost/100cal = 11/4.2 = $2.62. Protein/100cal = 16.7g.
+  ["Turkey Breast (deli)",    "Kirkland Signature · sliced · ~$11/lb",             16.7, 2.62, false],
+
+  // Pork loin: $3.49/lb. Per 100g = 136cal, 22g protein. 1lb = 454g = 617cal. Cost/100cal = 3.49/6.17 = $0.57. Protein/100cal = 16.2g.
+  ["Pork Loin (lean)",        "Kirkland · boneless · ~$3.49/lb",                  16.2, 0.57, false],
+
+  // Ground beef 93%: $5.99/lb. Per 100g = 152cal, 22g protein. 1lb = 454g = 690cal. Cost/100cal = 5.99/6.9 = $0.87. Protein/100cal = 14.5g.
+  ["Ground Beef (93% lean)",  "Kirkland · fresh · ~$5.99/lb",                     14.5, 0.87, false],
+
+  // Whey protein: $68 / 5.5lb bag ≈ 70 servings × 130cal = 9100cal total. Cost/100cal = 68/91 = $0.75. Per 35g scoop = 130cal, 25g. Protein/100cal = 19.2g.
+  ["Whey Protein Powder",     "Optimum Nutrition · 5.5lb · $68 at Costco",        19.2, 0.75, false],
+
+  // Hard boiled eggs: $11 / 32-count pack. Each egg ≈ 78cal, 6.3g protein. 32 eggs = 2496cal. Cost/100cal = 11/24.96 = $0.44. Protein/100cal = 8.1g.
+  ["Hard Boiled Eggs",        "Kirkland · 32-count precooked · ~$11",              8.1, 0.44, false],
+
+  // Lentils dried: $6.99 / 4lb bag. Dry: 1 cup (192g) = 678cal, 48g protein. 4lb = 1814g = 6400cal cooked ≈. Dry cost/100cal = 6.99/64 = $0.11. Protein/100cal dry = 7.1g.
+  ["Lentils (dry)",           "Kirkland · dried bulk · 4lb · ~$6.99",              7.1, 0.11, false],
+
+  // Edamame: $7.99 / 4lb bag frozen. Per 1/2 cup (78g shelled) = 90cal, 9g protein. 4lb = 1814g = 2090cal. Cost/100cal = 7.99/20.9 = $0.38. Protein/100cal = 10g.
+  ["Edamame (frozen)",        "Kirkland · shelled · 4lb bag · ~$7.99",            10.0, 0.38, false],
+
+  // Tofu firm: $5.99 / large pack ~42oz (1190g). Per 85g = 70cal, 8g protein. Total cal = 985. Cost/100cal = 5.99/9.85 = $0.61. Protein/100cal = 11.4g.
+  ["Tofu (firm)",             "Kirkland Organic · large pack · ~$5.99",           11.4, 0.61, false],
+
+  // Black beans: $7.99 / 8×15oz cans = 120oz = 3400g. Per 1/2 cup (130g) = 110cal, 7g. 8 cans ≈ 4400cal. Cost/100cal = 7.99/44 = $0.18. Protein/100cal = 6.4g.
+  ["Black Beans (canned)",    "Kirkland · 8×15oz · ~$7.99",                        6.4, 0.18, false],
+
+  // Skim milk: $4.99 / gallon = 3785mL. 1 cup (244mL) = 83cal, 8g protein. 1 gal = 1301cal. Cost/100cal = 4.99/13 = $0.38. Protein/100cal = 9.6g.
+  ["Skim Milk",               "Kirkland · gallon · ~$4.99",                         9.6, 0.38, false],
+
+  // Costco Rotisserie Chicken: $5 / bird. ~1000 usable cal, ~100g protein. Protein/100cal = 10g. Cost/100cal = 5/10 = $0.50.
+  ["Costco Rotisserie Chicken","★ $5.00 whole bird · ~1,000 usable cal",          10.0, 0.50, true ],
+];
+
+let data = raw.map(r => ({
+  name: r[0], sub: r[1],
+  protein: r[2],      // g protein per 100 cal
+  cost: r[3],         // $ per 100 cal (Costco)
+  special: r[4],
+  ppd: +(r[2] / r[3]).toFixed(1),  // g protein per $1
+}));
+
+// Assign ranks
+[...data].sort((a,b) => b.protein - a.protein).forEach((d,i) => d.calRank = i+1);
+[...data].sort((a,b) => b.ppd - a.ppd).forEach((d,i) => d.dollarRank = i+1);
+
+// Normalize
+const norm = (v, min, max) => +((v-min)/(max-min)*100).toFixed(1);
+const calMax = Math.max(...data.map(d=>d.protein)), calMin = Math.min(...data.map(d=>d.protein));
+const dolMax = Math.max(...data.map(d=>d.ppd)), dolMin = Math.min(...data.map(d=>d.ppd));
+data.forEach(d => {
+  d.calScore = norm(d.protein, calMin, calMax);
+  d.dolScore = norm(d.ppd, dolMin, dolMax);
+});
+
+let budgetWeight = 0.5;
+
+function composite(d) { return +((1-budgetWeight)*d.calScore + budgetWeight*d.dolScore).toFixed(1); }
+
+function tierOf(s) {
+  if (s >= 80) return ['S-Tier','tier-s'];
+  if (s >= 60) return ['A-Tier','tier-a'];
+  if (s >= 40) return ['B-Tier','tier-b'];
+  return ['C-Tier','tier-c'];
+}
+
+function render() {
+  data.forEach(d => d.comp = composite(d));
+  const sorted = [...data].sort((a,b) => b.comp - a.comp);
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  sorted.forEach((row, i) => {
+    const rank = i + 1;
+    const [tlabel, tclass] = row.special ? ['★ Special','tier-special'] : tierOf(row.comp);
+    const compColor = row.comp>=80?'var(--accent)':row.comp>=60?'#64dc64':row.comp>=40?'#ffc832':'var(--accent2)';
+    const topClass = rank===1?'top1':rank===2?'top2':rank===3?'top3':'';
+
+    const tr = document.createElement('tr');
+    if (topClass) tr.className = topClass;
+    if (row.special) tr.style.background = '#120d07';
+    tr.style.animationDelay = (i * 0.022) + 's';
+
+    tr.innerHTML = `
+      <td class="rank-cell">${rank}</td>
+      <td>
+        <div class="food-name">${row.name}${row.special?'<span class="special-tag">$5 BIRD</span>':''}</div>
+        <div class="food-sub">${row.sub}</div>
+      </td>
+      <td class="num">${row.protein}g</td>
+      <td class="num"><span class="rank-badge cal-badge">#${row.calRank}</span></td>
+      <td class="price-td">$${row.cost.toFixed(2)}</td>
+      <td class="num">${row.ppd}g</td>
+      <td class="num"><span class="rank-badge dollar-badge">#${row.dollarRank}</span></td>
+      <td class="num"><span class="composite-num" style="color:${compColor}">${row.comp}</span></td>
+      <td><span class="tier-pill ${tclass}">${tlabel}</span></td>
+      <td>
+        <div class="bars-col">
+          <div class="bar-row">
+            <span class="bar-lbl c">C</span>
+            <div class="mini-bar"><div class="mini-fill-c" style="width:${row.calScore}%"></div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-lbl d">$</span>
+            <div class="mini-bar"><div class="mini-fill-d" style="width:${row.dolScore}%"></div></div>
+          </div>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+const slider = document.getElementById('slider');
+const wDisplay = document.getElementById('wDisplay');
+
+slider.addEventListener('input', () => {
+  budgetWeight = slider.value / 100;
+  const calPct = 100 - +slider.value;
+  const dolPct = +slider.value;
+  slider.style.setProperty('--fill', dolPct + '%');
+  wDisplay.innerHTML = `<span style="color:var(--accent)">${calPct}%</span> Cal &nbsp;/&nbsp; <span style="color:var(--blue)">${dolPct}%</span> Budget`;
+  render();
+});
+
+slider.style.setProperty('--fill', '50%');
+render();
+</script>
+</body>
+</html>
