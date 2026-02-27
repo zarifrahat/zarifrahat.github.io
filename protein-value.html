@@ -3,92 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Costco Protein Value Index — 40 Items</title>
+<title>Costco Protein Value Index</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0a;
-    --surface: #111;
-    --border: #222;
-    --accent: #c8f135;
-    --blue: #38bdf8;
-    --accent2: #ff6b35;
-    --text: #f0f0f0;
-    --muted: #555;
-    --gold: #ffd700;
+    --bg: #0a0a0a; --surface: #111; --border: #222;
+    --accent: #c8f135; --blue: #38bdf8; --accent2: #ff6b35;
+    --text: #f0f0f0; --muted: #555; --gold: #ffd700;
   }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; padding:40px 20px 60px; background-image:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(200,241,53,.07) 0%,transparent 60%); }
+  header { text-align:center; margin-bottom:36px; }
+  h1 { font-family:'Bebas Neue',cursive; font-size:clamp(44px,7vw,88px); letter-spacing:4px; line-height:1; background:linear-gradient(135deg,var(--accent) 0%,#8ec700 60%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .subtitle { font-family:'DM Mono',monospace; color:var(--muted); font-size:11px; letter-spacing:3px; text-transform:uppercase; margin-top:8px; }
+  .costco-badge { display:inline-flex; align-items:center; gap:8px; background:#1a0a00; border:1px solid #e31837; border-radius:4px; padding:6px 14px; font-family:'DM Mono',monospace; font-size:11px; color:#e31837; letter-spacing:2px; text-transform:uppercase; margin-top:12px; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* Add-item hint box */
+  .hint-box { max-width:1150px; margin:0 auto 28px; background:#0d0d0d; border:1px solid #1e1e1e; border-left:3px solid var(--accent); border-radius:5px; padding:16px 20px; }
+  .hint-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+  .hint-code { font-family:'DM Mono',monospace; font-size:12px; color:#aaa; background:#060606; padding:10px 14px; border-radius:4px; line-height:1.8; overflow-x:auto; white-space:pre; }
+  .hint-code .field { color:var(--accent); }
+  .hint-code .comment { color:var(--muted); }
+  .hint-cats { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
+  .hint-cat { font-family:'DM Mono',monospace; font-size:10px; padding:2px 8px; border-radius:2px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    padding: 40px 20px 60px;
-    background-image: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(200,241,53,0.07) 0%, transparent 60%);
-  }
-
-  header { text-align: center; margin-bottom: 36px; }
-
-  h1 {
-    font-family: 'Bebas Neue', cursive;
-    font-size: clamp(44px, 7vw, 88px);
-    letter-spacing: 4px;
-    line-height: 1;
-    background: linear-gradient(135deg, var(--accent) 0%, #8ec700 60%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .subtitle {
-    font-family: 'DM Mono', monospace;
-    color: var(--muted);
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-top: 8px;
-  }
-
-  .costco-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #1a0a00;
-    border: 1px solid #e31837;
-    border-radius: 4px;
-    padding: 6px 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: #e31837;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 12px;
-  }
-
-  .method-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    max-width: 1150px;
-    margin: 0 auto 28px;
-  }
-  @media(max-width: 750px) { .method-grid { grid-template-columns: 1fr; } }
-
-  .method-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px 18px;
-    position: relative;
-    overflow: hidden;
-  }
+  .method-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; max-width:1150px; margin:0 auto 28px; }
+  @media(max-width:750px){.method-grid{grid-template-columns:1fr;}}
+  .method-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:16px 18px; position:relative; overflow:hidden; }
   .method-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
-  .method-card.cal::before { background: var(--accent); }
-  .method-card.dollar::before { background: var(--blue); }
-  .method-card.composite::before { background: linear-gradient(90deg, var(--accent), var(--blue)); }
-
+  .method-card.cal::before { background:var(--accent); }
+  .method-card.dollar::before { background:var(--blue); }
+  .method-card.composite::before { background:linear-gradient(90deg,var(--accent),var(--blue)); }
   .method-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
   .method-card.cal .method-label { color:var(--accent); }
   .method-card.dollar .method-label { color:var(--blue); }
@@ -96,98 +41,48 @@
   .method-formula { font-family:'DM Mono',monospace; font-size:12px; color:var(--text); margin-bottom:5px; line-height:1.5; }
   .method-desc { font-size:11px; color:var(--muted); line-height:1.6; }
 
-  /* Category filter */
-  .filter-row {
-    max-width: 1150px;
-    margin: 0 auto 20px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
+  .filter-row { max-width:1150px; margin:0 auto 20px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
   .filter-label { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-right:4px; }
-  .filter-btn {
-    font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px;
-    padding: 5px 12px; border-radius: 3px; border: 1px solid var(--border); background: var(--surface);
-    color: var(--muted); cursor: pointer; transition: all 0.15s;
-  }
-  .filter-btn:hover { border-color: #444; color: #aaa; }
-  .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,241,53,0.07); }
+  .filter-btn { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; padding:5px 12px; border-radius:3px; border:1px solid var(--border); background:var(--surface); color:var(--muted); cursor:pointer; transition:all .15s; }
+  .filter-btn:hover { border-color:#444; color:#aaa; }
+  .filter-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(200,241,53,.07); }
 
-  .weight-control {
-    max-width: 1150px;
-    margin: 0 auto 24px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px 22px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    flex-wrap: wrap;
-  }
+  .weight-control { max-width:1150px; margin:0 auto 24px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:16px 22px; display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
   .weight-label { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); white-space:nowrap; }
   .slider-wrap { flex:1; display:flex; align-items:center; gap:12px; min-width:220px; }
   .slider-end { font-family:'DM Mono',monospace; font-size:10px; white-space:nowrap; line-height:1.4; text-align:center; }
   .slider-end.cal { color:var(--accent); }
   .slider-end.dollar { color:var(--blue); }
-  input[type=range] {
-    flex:1; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer;
-    background: linear-gradient(90deg, var(--accent) var(--fill,50%), var(--blue) var(--fill,50%));
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance:none; width:16px; height:16px; border-radius:50%;
-    background:#fff; border:2px solid #2a2a2a; box-shadow:0 0 10px rgba(200,241,53,.35); cursor:pointer;
-  }
+  input[type=range] { flex:1; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:linear-gradient(90deg,var(--accent) var(--fill,50%),var(--blue) var(--fill,50%)); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:#fff; border:2px solid #2a2a2a; box-shadow:0 0 10px rgba(200,241,53,.35); cursor:pointer; }
   .weight-display { font-family:'Bebas Neue',cursive; font-size:17px; white-space:nowrap; min-width:160px; text-align:right; }
 
-  .stats-row {
-    max-width: 1150px;
-    margin: 0 auto 20px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-  @media(max-width:600px) { .stats-row { grid-template-columns: 1fr 1fr; } }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 12px 14px;
-  }
+  .stats-row { max-width:1150px; margin:0 auto 20px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  @media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr;}}
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:5px; padding:12px 14px; }
   .stat-label { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:4px; }
   .stat-value { font-family:'Bebas Neue',cursive; font-size:22px; color:var(--accent); line-height:1; }
   .stat-sub { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:3px; }
 
-  .legend {
-    display:flex; justify-content:center; gap:22px; margin-bottom:20px; flex-wrap:wrap;
-  }
+  .legend { display:flex; justify-content:center; gap:22px; margin-bottom:20px; flex-wrap:wrap; }
   .legend-item { display:flex; align-items:center; gap:7px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
   .legend-dot { width:8px; height:8px; border-radius:50%; }
 
+  .count-line { max-width:1150px; margin:0 auto 10px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); text-align:right; }
+
   .table-wrapper { max-width:1150px; margin:0 auto; overflow-x:auto; }
-
   table { width:100%; border-collapse:collapse; }
-
-  thead th {
-    font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px;
-    color:var(--muted); padding:10px 11px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap;
-    position: sticky; top: 0; background: #0d0d0d; z-index: 10;
-  }
+  thead th { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); padding:10px 11px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; position:sticky; top:0; background:#0d0d0d; z-index:10; }
   thead th.num { text-align:right; }
-  thead th.price-col { color: #777 !important; }
 
   .cat-dot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:5px; vertical-align:middle; }
 
   tbody tr { border-bottom:1px solid #161616; transition:background .12s; animation:fadeIn .3s ease both; }
   tbody tr:hover { background:#141414; }
-  tbody tr.hidden { display: none; }
-
+  tbody tr.hidden { display:none; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
 
   td { padding:11px 11px; font-size:13px; vertical-align:middle; }
-
   td.rank-cell { font-family:'Bebas Neue',cursive; font-size:24px; color:var(--muted); width:42px; padding-right:4px; }
   tr.top1 td.rank-cell { color:var(--gold); }
   tr.top2 td.rank-cell { color:#c0c0c0; }
@@ -195,13 +90,8 @@
 
   .food-name { font-weight:600; font-size:13px; line-height:1.3; }
   .food-sub { font-size:10px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
-
-  .tag {
-    display:inline-block; font-family:'DM Mono',monospace;
-    font-size:8px; letter-spacing:1px; text-transform:uppercase; padding:2px 5px; border-radius:2px; margin-left:5px; vertical-align:middle;
-  }
+  .tag { display:inline-block; font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px; text-transform:uppercase; padding:2px 5px; border-radius:2px; margin-left:5px; vertical-align:middle; }
   .tag-special { background:var(--accent2); color:#fff; }
-  .tag-new { background: rgba(168,139,250,0.25); color:#a78bfa; border:1px solid rgba(168,139,250,0.3); }
 
   td.num { text-align:right; font-family:'DM Mono',monospace; font-size:12px; }
   td.price-td { text-align:right; font-family:'DM Mono',monospace; font-size:11px; color:#666; }
@@ -228,32 +118,62 @@
   .mini-fill-c { height:100%; background:var(--accent); border-radius:2px; }
   .mini-fill-d { height:100%; background:var(--blue); border-radius:2px; }
 
-  .count-line {
-    max-width:1150px; margin:0 auto 10px;
-    font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);
-    text-align: right;
-  }
-
-  .footnote {
-    max-width:1150px; margin:22px auto 0; font-family:'DM Mono',monospace;
-    font-size:10px; color:#333; line-height:1.9; border-top:1px solid var(--border); padding-top:16px;
-  }
-
-  /* Category colors */
-  .cat-meat { --cat: #f87171; }
-  .cat-fish { --cat: #38bdf8; }
-  .cat-dairy { --cat: #fbbf24; }
-  .cat-plant { --cat: #4ade80; }
-  .cat-processed { --cat: #a78bfa; }
+  .footnote { max-width:1150px; margin:22px auto 0; font-family:'DM Mono',monospace; font-size:10px; color:#333; line-height:1.9; border-top:1px solid var(--border); padding-top:16px; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Costco Protein Value Index</h1>
-  <p class="subtitle">40 Items · Dual-Rank System · Real Costco Prices · Live Weighting</p>
-  <div class="costco-badge">🏷️ All prices Costco / Kirkland Signature 2024–2025 · 20 new items added</div>
+  <p class="subtitle">Dual-Rank · Real Costco Prices · Edit the array to add items</p>
+  <div class="costco-badge">🏷️ All prices Costco / Kirkland Signature 2024–2025</div>
 </header>
+
+<!-- =====================================================================
+     HOW TO ADD A NEW FOOD ITEM
+     =====================================================================
+     Find the FOODS array below and add a new line in this format:
+
+       ["Name", "Sub description", protein_per_100cal, cost_per_100cal, "category", isSpecial],
+
+     Fields:
+       name            → Display name  e.g. "Canned Chicken"
+       sub             → Short note    e.g. "Kirkland · 6×12.5oz · ready to eat"
+       protein_per_100cal → Grams of protein per 100 calories  e.g. 21.7
+       cost_per_100cal → Dollars per 100 calories  e.g. 0.57
+       category        → One of: "meat" | "fish" | "dairy" | "plant" | "processed"
+       isSpecial       → true for the $5 Costco rotisserie chicken, false for everything else
+
+     HOW TO CALCULATE cost_per_100cal:
+       1. Find total calories in the package
+       2. cost_per_100cal = package_price / (total_calories / 100)
+       Example: $18.99 package with 1680 total calories → 18.99 / (1680/100) = 18.99 / 16.8 = $1.13
+
+     HOW TO FIND protein_per_100cal:
+       Check the nutrition label. If it shows 23g protein per 200 cal serving → 23/200*100 = 11.5
+       Or just Google "[food name] protein per 100 calories"
+
+     Everything else (ranks, scores, tiers, bars, stats) is computed automatically.
+====================================================================== -->
+<!-- =====================================================================
+     HOW TO ADD A NEW FOOD ITEM
+     =====================================================================
+<div class="hint-box">
+  <div class="hint-title">✏️ How to add a new item — edit the FOODS array in the &lt;script&gt; tag</div>
+  <div class="hint-code"><span class="comment">// Add one line anywhere in the FOODS array:</span>
+[<span class="field">"Food Name"</span>, <span class="field">"Kirkland · package details · price ref"</span>, <span class="field">protein_per_100cal</span>, <span class="field">cost_per_100cal</span>, <span class="field">"category"</span>, <span class="field">false</span>],
+<span class="comment">// cost_per_100cal = package_price ÷ (total_package_calories ÷ 100)
+  // protein_per_100cal = nutrition label grams of protein ÷ serving calories × 100
+  // category options below — everything else computes automatically</span></div>
+  <div class="hint-cats">
+    <span class="hint-cat" style="background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.25)">"meat"</span>
+    <span class="hint-cat" style="background:rgba(56,189,248,.1);color:#38bdf8;border:1px solid rgba(56,189,248,.22)">"fish"</span>
+    <span class="hint-cat" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.22)">"dairy"</span>
+    <span class="hint-cat" style="background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.22)">"plant"</span>
+    <span class="hint-cat" style="background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.22)">"processed"</span>
+  </div>
+</div>
+====================================================================== -->
 
 <div class="method-grid">
   <div class="method-card cal">
@@ -275,12 +195,12 @@
 
 <div class="filter-row">
   <span class="filter-label">Filter:</span>
-  <button class="filter-btn active" data-cat="all">All 40</button>
+  <button class="filter-btn active" data-cat="all">All</button>
   <button class="filter-btn" data-cat="meat">🥩 Meat</button>
   <button class="filter-btn" data-cat="fish">🐟 Fish & Seafood</button>
   <button class="filter-btn" data-cat="dairy">🥛 Dairy & Eggs</button>
   <button class="filter-btn" data-cat="plant">🌱 Plant-Based</button>
-  <button class="filter-btn" data-cat="processed">⚡ Processed / Supplements</button>
+  <button class="filter-btn" data-cat="processed">⚡ Processed / Supps</button>
 </div>
 
 <div class="weight-control">
@@ -295,9 +215,9 @@
   </div>
 </div>
 
-<div class="stats-row" id="statsRow">
+<div class="stats-row">
   <div class="stat-card">
-    <div class="stat-label">Best Value (Composite)</div>
+    <div class="stat-label">Best Composite Value</div>
     <div class="stat-value" id="statBest">—</div>
     <div class="stat-sub" id="statBestSub">—</div>
   </div>
@@ -312,9 +232,9 @@
     <div class="stat-sub" id="statDolSub">—</div>
   </div>
   <div class="stat-card">
-    <div class="stat-label">Costco Rotisserie Rank</div>
+    <div class="stat-label">Rotisserie Chicken Rank</div>
     <div class="stat-value" id="statCostco">—</div>
-    <div class="stat-sub">out of 40 items</div>
+    <div class="stat-sub" id="statCostcoSub">out of <span id="totalCount">—</span> items</div>
   </div>
 </div>
 
@@ -324,13 +244,13 @@
   <div class="legend-item"><div class="legend-dot" style="background:#ffc832"></div>B-Tier 40–59</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div>C-Tier &lt;40</div>
   <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>Meat</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#38bdf8"></div>Fish & Seafood</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Dairy & Eggs</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>Plant-Based</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>Processed / Supps</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#38bdf8"></div>Fish</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Dairy</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>Plant</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>Processed</div>
 </div>
 
-<div class="count-line" id="countLine">Showing 40 of 40 items</div>
+<div class="count-line" id="countLine"></div>
 
 <div class="table-wrapper">
   <table>
@@ -340,7 +260,7 @@
         <th>Food (Costco / Kirkland)</th>
         <th class="num" style="color:var(--accent)">Protein<br>/100 cal</th>
         <th class="num" style="color:var(--accent)">Cal<br>Rank</th>
-        <th class="num price-col">Cost<br>/100 cal</th>
+        <th class="num" style="color:#777">Cost<br>/100 cal</th>
         <th class="num" style="color:var(--blue)">Protein<br>/ $1</th>
         <th class="num" style="color:var(--blue)">Budget<br>Rank</th>
         <th class="num">Composite<br>Score</th>
@@ -354,128 +274,107 @@
 
 <div class="footnote">
   * All prices are Costco/Kirkland Signature warehouse prices, 2024–2025. Prices vary by location and season.<br>
-  * ★ NEW items added in this version are marked with a purple NEW tag.<br>
-  * Protein/100 cal = grams of protein you get from 100 calories of that food (calorie efficiency).<br>
-  * Protein/$1 = grams of protein per dollar spent at Costco (budget efficiency).<br>
-  * Composite Score = weighted average of normalized Cal Score (0–100) and Budget Score (0–100). Drag slider to adjust.<br>
-  * Collagen peptides: protein quality note — collagen is not a complete protein (lacks tryptophan). High protein/cal ratio but lower bioavailability.<br>
-  * Bone broth: protein/cal ratio is very high due to very low calorie density; collagen-type protein applies here too.<br>
-  * Costco Rotisserie Chicken: $5.00/bird · ~1,000 usable cal · ~100g usable protein → 10g/100cal · 20g/$1.
+  * cost_per_100cal = package_price ÷ (total_package_calories ÷ 100). Protein/100 cal from nutrition labels.<br>
+  * Composite Score = weighted average of normalized Calorie Score (0–100) and Budget Score (0–100). Slider adjusts weighting.<br>
+  * Collagen &amp; bone broth: high protein/cal but incomplete protein (lacks tryptophan). Bioavailability is lower than animal protein.<br>
+  * Costco Rotisserie Chicken: $5.00/bird · ~1,000 usable cal · ~100g usable protein.
 </div>
 
 <script>
-// [name, sub, protein_per_100cal, cost_per_100cal, category, special, isNew]
-// categories: meat, fish, dairy, plant, processed
-const raw = [
-  // ── ORIGINAL 20 ──
-  ["Egg Whites",              "Kirkland · 6×16oz · cage free",                   20.0, 0.74, "dairy",     false, false],
-  ["Canned Tuna (Albacore)", "Kirkland 8×7oz · wild caught in water",            21.7, 1.13, "fish",      false, false],
-  ["Chicken Breast",          "Kirkland · boneless skinless · $3.39/lb",          20.9, 0.68, "meat",      false, false],
-  ["Tilapia (frozen)",        "Kirkland · frozen loins · $7.56/lb",               20.8, 1.74, "fish",      false, false],
-  ["Shrimp (frozen raw)",     "Kirkland Wild Argentine · ~$9/lb",                 24.2, 2.00, "fish",      false, false],
-  ["Canned Salmon",           "Kirkland · 6×6oz · wild pink Alaska",              13.1, 0.57, "fish",      false, false],
-  ["Nonfat Greek Yogurt",     "Kirkland Organic · 48oz · plain",                  20.0, 1.11, "dairy",     false, false],
-  ["Cottage Cheese",          "Darigold / Kirkland · large tub · lowfat",         14.4, 0.83, "dairy",     false, false],
-  ["Sardines",                "Kirkland · 5×3.75oz · in water",                   12.1, 0.84, "fish",      false, false],
-  ["Turkey Breast (deli)",    "Kirkland Signature · sliced · ~$11/lb",            16.7, 2.62, "meat",      false, false],
-  ["Pork Loin (lean)",        "Kirkland · boneless · ~$3.49/lb",                  16.2, 0.57, "meat",      false, false],
-  ["Ground Beef (93% lean)",  "Kirkland · fresh · ~$5.99/lb",                     14.5, 0.87, "meat",      false, false],
-  ["Whey Protein Powder",     "Optimum Nutrition · 5.5lb · $68 at Costco",        19.2, 0.75, "processed", false, false],
-  ["Hard Boiled Eggs",        "Kirkland · 32-count precooked · ~$11",              8.1, 0.44, "dairy",     false, false],
-  ["Lentils (dry)",           "Kirkland · dried bulk · 4lb · ~$6.99",              7.1, 0.11, "plant",     false, false],
-  ["Edamame (frozen)",        "Kirkland · shelled · 4lb bag · ~$7.99",            10.0, 0.38, "plant",     false, false],
-  ["Tofu (firm)",             "Kirkland Organic · large pack · ~$5.99",           11.4, 0.61, "plant",     false, false],
-  ["Black Beans (canned)",    "Kirkland · 8×15oz · ~$7.99",                        6.4, 0.18, "plant",     false, false],
-  ["Skim Milk",               "Kirkland · gallon · ~$4.99",                         9.6, 0.38, "dairy",     false, false],
-  ["Costco Rotisserie Chicken","★ $5.00 whole bird · ~1,000 usable cal",          10.0, 0.50, "meat",      true,  false],
-
-  // ── NEW 20 ──
-  // Beef jerky steak strips: 9g/oz, 60cal/oz → 15g/100cal. $15/12oz pack → $0.021/g. Cost/100cal: 15/12oz=$1.25/oz of 60cal → $2.08/100cal
-  ["Beef Steak Strips (jerky)","Kirkland Premium · 12-serving bag · ~$15",        15.0, 2.08, "processed", false, true],
-
-  // Kirkland protein bars: $24.99/20 bars, 180cal, 21g protein → 11.7g/100cal. 20 bars × 180cal = 3600cal. Cost/100cal = 24.99/36 = $0.69
-  ["Protein Bars",            "Kirkland · 20-pack · Peanut Butter/Cookies & Cream", 11.7, 0.69, "processed", false, true],
-
-  // Sous vide egg bites: $13 / 5 servings (10 bites), 17g protein, 170cal per serving → 10g/100cal. 5×170=850cal. Cost/100cal = 13/8.5 = $1.53
-  ["Sous Vide Egg Bites",     "Kirkland · Bacon & Gouda · 10-pack · $13-15",      10.0, 1.53, "dairy",     false, true],
-
-  // Canned chicken breast: $16 for 6×12.5oz. Per 56g = 60cal, 13g → 21.7g/100cal. 6 cans × ~150cal = 900cal. Cost/100cal = 16/9 = $1.78
-  ["Canned Chicken Breast",   "Kirkland · 6×12.5oz · ready to eat",               21.7, 1.78, "meat",      false, true],
-
-  // Ground bison: ~$7/lb. Per 100g = 146cal, 20g protein → 13.7g/100cal. 1lb = 454g = 663cal. Cost/100cal = 7/6.63 = $1.06
-  ["Ground Bison",            "Kirkland · fresh · ~$7/lb",                         13.7, 1.06, "meat",      false, true],
-
-  // Hemp hearts: $14 for 2.5lb bag. Per 30g = 170cal, 10g protein → 5.9g/100cal. 2.5lb=1134g, 1134/30 servings × 170cal = 6426cal. Cost/100cal = 14/64.3 = $0.22
-  ["Hemp Hearts",             "Manitoba Harvest · 2.5lb bag · ~$14 at Costco",     5.9, 0.22, "plant",     false, true],
-
-  // Pumpkin seeds pepitas: $11 for 3lb. Per oz (28g) = 158cal, 9g protein → 5.7g/100cal. 3lb=1361g = 77oz. Total cal = 77×158=12166cal. Cost/100cal = 11/121.7 = $0.09
-  ["Pumpkin Seeds (pepitas)", "Kirkland · roasted · 3lb bag · ~$11",               5.7, 0.09, "plant",     false, true],
-
-  // Chickpeas canned: $7.99 / 8-pack 15oz cans. Per 1/2 cup (130g) = 120cal, 6g → 5g/100cal. 8 cans ≈ 4800cal. Cost/100cal = 7.99/48 = $0.17
-  ["Chickpeas (canned)",      "Kirkland · 8×15oz cans · ~$7.99",                   5.0, 0.17, "plant",     false, true],
-
-  // Wild Planet albacore tuna steak (at Costco): $14.99 for 6×5oz. Per 2oz drained = 70cal, 16g → 22.9g/100cal. 6×5oz=30oz. ~210cal/can×6=1260cal. Cost/100cal = 14.99/12.6 = $1.19
-  ["Wild Albacore Tuna Steak","Wild Planet · 6×5oz · no salt added · ~$14.99",    22.9, 1.19, "fish",      false, true],
-
-  // Kirkland Atlantic salmon frozen fillets: ~$10/lb. Per 100g = 208cal, 20g → 9.6g/100cal. 1lb = 454g = 944cal. Cost/100cal = 10/9.44 = $1.06
-  ["Salmon Fillets (frozen)", "Kirkland Atlantic · frozen portions · ~$10/lb",     9.6, 1.06, "fish",      false, true],
-
-  // Turkey jerky: ~$15 / 10oz bag. Per oz = 70cal, 10g protein → 14.3g/100cal. 10oz = 700cal. Cost/100cal = 15/7 = $2.14
-  ["Turkey Jerky",            "Kirkland · extra lean · ~$15 / 10oz bag",           14.3, 2.14, "processed", false, true],
-
-  // Whole fresh eggs: $6.99 / 2 dozen = 24 eggs. Per egg = 78cal, 6.3g → 8.1g/100cal. 24×78=1872cal. Cost/100cal = 6.99/18.72 = $0.37
-  ["Whole Eggs (fresh)",      "Kirkland · 2 dozen · cage free · ~$6.99",            8.1, 0.37, "dairy",     false, true],
-
-  // Collagen peptides Vital Proteins: $36 for 2lb at Costco. Per scoop (10g) = 35cal, 9g protein → 25.7g/100cal. 2lb=908g, 90 scoops × 35cal = 3150cal. Cost/100cal = 36/31.5 = $1.14
-  ["Collagen Peptides",       "Vital Proteins · 2lb · unflavored · ~$36",          25.7, 1.14, "processed", false, true],
-
-  // Roasted edamame: ~$12 for large bag. Per 1oz (28g) = 100cal, 11g → 11g/100cal. Large bag ~22oz = 2200cal. Cost/100cal = 12/22 = $0.55
-  ["Roasted Edamame",         "The Only Bean · sea salt · large bag · ~$12",       11.0, 0.55, "plant",     false, true],
-
-  // Flank steak: ~$8/lb at Costco. Per 100g = 157cal, 27g → 17.2g/100cal. 1lb = 454g = 713cal. Cost/100cal = 8/7.13 = $1.12
-  ["Flank Steak",             "Kirkland · USDA Choice · ~$8/lb",                   17.2, 1.12, "meat",      false, true],
-
-  // Halibut frozen: ~$18/lb. Per 100g = 110cal, 23g → 20.9g/100cal. 1lb=454g=500cal. Cost/100cal = 18/5 = $3.60
-  ["Halibut (frozen)",        "Kirkland · Pacific · frozen portions · ~$18/lb",    20.9, 3.60, "fish",      false, true],
-
-  // Mozzarella string cheese: Kirkland 60-count ~$16. Per stick = 80cal, 8g → 10g/100cal. 60×80=4800cal. Cost/100cal = 16/48 = $0.33
-  ["String Cheese (mozzarella)","Kirkland · 60-stick pack · ~$16",                10.0, 0.33, "dairy",     false, true],
-
-  // Bone broth: Kirkland 6×32oz $15.99. Per cup (240mL) = 45cal, 10g protein → 22.2g/100cal. 6×32oz=192oz=24 cups × 45cal = 1080cal. Cost/100cal = 15.99/10.8 = $1.48
-  ["Bone Broth",              "Kirkland · 6×32oz · chicken · ~$15.99",             22.2, 1.48, "processed", false, true],
-
-  // Kirkland precooked chicken strips (grilled): $17 / pack ~7 servings, 140cal, 21g → 15g/100cal. 7×140=980cal. Cost/100cal = 17/9.8 = $1.73
-  ["Grilled Chicken Strips",  "Kirkland · precooked · ready to eat · ~$17/pack",   15.0, 1.73, "meat",      false, true],
-
-  // Skyr / Siggi's icelandic yogurt: ~$9 for large multi-pack at Costco. Per 2/3 cup (150g) = 100cal, 17g → 17g/100cal. ~10 servings × 100cal = 1000cal. Cost/100cal = 9/10 = $0.90
-  ["Skyr (Icelandic Yogurt)", "Siggi's · plain 0% · multi-pack · ~$9 at Costco",  17.0, 0.90, "dairy",     false, true],
+// =============================================================
+//  FOODS ARRAY — edit this to add or remove items
+//
+//  Format: ["Name", "Sub", protein_per_100cal, cost_per_100cal, "category", isSpecial]
+//
+//  isSpecial: only true for the $5 Costco rotisserie chicken
+// =============================================================
+const FOODS = [
+  ["Egg Whites",               "Kirkland · 6×16oz · cage free",                    20.0, 0.74, "dairy",     false],
+  ["Canned Tuna (Albacore)",   "Kirkland · 8×7oz · wild caught in water",           21.7, 1.13, "fish",      false],
+  ["Chicken Breast",           "Kirkland · boneless skinless · $3.39/lb",           20.9, 0.68, "meat",      false],
+  ["Tilapia (frozen)",         "Kirkland · frozen loins · $7.56/lb",                20.8, 1.74, "fish",      false],
+  ["Shrimp (frozen raw)",      "Kirkland Wild Argentine · ~$9/lb",                  24.2, 2.00, "fish",      false],
+  ["Canned Salmon",            "Kirkland · 6×6oz · wild pink Alaska",               13.1, 0.57, "fish",      false],
+  ["Nonfat Greek Yogurt",      "Kirkland Organic · 48oz · plain",                   20.0, 1.11, "dairy",     false],
+  ["Cottage Cheese",           "Darigold / Kirkland · large tub · lowfat",          14.4, 0.83, "dairy",     false],
+  ["Sardines",                 "Kirkland · 5×3.75oz · in water",                    12.1, 0.84, "fish",      false],
+  ["Turkey Breast (deli)",     "Kirkland Signature · sliced · ~$11/lb",             16.7, 2.62, "meat",      false],
+  ["Pork Loin (lean)",         "Kirkland · boneless · ~$3.49/lb",                   16.2, 0.57, "meat",      false],
+  ["Ground Beef (93% lean)",   "Kirkland · fresh · ~$5.99/lb",                      14.5, 0.87, "meat",      false],
+  ["Whey Protein Powder",      "Optimum Nutrition · 5.5lb · $68 at Costco",         19.2, 0.75, "processed", false],
+  ["Hard Boiled Eggs",         "Kirkland · 32-count precooked · ~$11",               8.1, 0.44, "dairy",     false],
+  ["Lentils (dry)",            "Kirkland · dried bulk · 4lb · ~$6.99",               7.1, 0.11, "plant",     false],
+  ["Edamame (frozen)",         "Kirkland · shelled · 4lb bag · ~$7.99",             10.0, 0.38, "plant",     false],
+  ["Tofu (firm)",              "Kirkland Organic · large pack · ~$5.99",            11.4, 0.61, "plant",     false],
+  ["Black Beans (canned)",     "Kirkland · 8×15oz · ~$7.99",                         6.4, 0.18, "plant",     false],
+  ["Skim Milk",                "Kirkland · gallon · ~$4.99",                          9.6, 0.38, "dairy",     false],
+  ["Costco Rotisserie Chicken","$5.00 whole bird · ~1,000 usable cal",              10.0, 0.50, "meat",      true ],
+  ["Beef Steak Strips (jerky)","Kirkland Premium · ~12-serving bag · ~$15",         15.0, 2.08, "processed", false],
+  ["Protein Bars",             "Kirkland · 20-pack · PB / Cookies & Cream",         11.7, 0.69, "processed", false],
+  ["Sous Vide Egg Bites",      "Kirkland · Bacon & Gouda · 10-pack · ~$13",         10.0, 1.53, "dairy",     false],
+  ["Canned Chicken Breast",    "Kirkland · 6×12.5oz · ready to eat",                21.7, 1.78, "meat",      false],
+  ["Ground Bison",             "Kirkland · fresh · ~$7/lb",                          13.7, 1.06, "meat",      false],
+  ["Hemp Hearts",              "Manitoba Harvest · 2.5lb bag · ~$14 at Costco",      5.9, 0.22, "plant",     false],
+  ["Pumpkin Seeds (pepitas)",  "Kirkland · roasted · 3lb bag · ~$11",                5.7, 0.09, "plant",     false],
+  ["Chickpeas (canned)",       "Kirkland · 8×15oz cans · ~$7.99",                    5.0, 0.17, "plant",     false],
+  ["Wild Albacore Tuna Steak", "Wild Planet · 6×5oz · no salt added · ~$14.99",     22.9, 1.19, "fish",      false],
+  ["Salmon Fillets (frozen)",  "Kirkland Atlantic · frozen portions · ~$10/lb",      9.6, 1.06, "fish",      false],
+  ["Turkey Jerky",             "Kirkland · extra lean · ~$15 / 10oz bag",            14.3, 2.14, "processed", false],
+  ["Whole Eggs (fresh)",       "Kirkland · 2 dozen · cage free · ~$6.99",             8.1, 0.37, "dairy",     false],
+  ["Collagen Peptides",        "Vital Proteins · 2lb · unflavored · ~$36",           25.7, 1.14, "processed", false],
+  ["Roasted Edamame",          "The Only Bean · sea salt · large bag · ~$12",        11.0, 0.55, "plant",     false],
+  ["Flank Steak",              "Kirkland · USDA Choice · ~$8/lb",                    17.2, 1.12, "meat",      false],
+  ["Halibut (frozen)",         "Kirkland · Pacific · frozen portions · ~$18/lb",     20.9, 3.60, "fish",      false],
+  ["String Cheese (mozzarella)","Kirkland · 60-stick pack · ~$16",                  10.0, 0.33, "dairy",     false],
+  ["Bone Broth",               "Kirkland · 6×32oz · chicken · ~$15.99",              22.2, 1.48, "processed", false],
+  ["Grilled Chicken Strips",   "Kirkland · precooked · ready to eat · ~$17/pack",    15.0, 1.73, "meat",      false],
+  ["Skyr (Icelandic Yogurt)",  "Siggi's · plain 0% · multi-pack · ~$9 at Costco",   17.0, 0.90, "dairy",     false],
 ];
+// =============================================================
+//  END OF FOODS ARRAY — do not edit below this line
+// =============================================================
 
-const catColors = { meat:'#f87171', fish:'#38bdf8', dairy:'#fbbf24', plant:'#4ade80', processed:'#a78bfa' };
+const CAT_COLORS = { meat:'#f87171', fish:'#38bdf8', dairy:'#fbbf24', plant:'#4ade80', processed:'#a78bfa' };
 
-let data = raw.map(r => ({
-  name: r[0], sub: r[1],
-  protein: r[2], cost: r[3],
-  cat: r[4], special: r[5], isNew: r[6],
-  ppd: +(r[2] / r[3]).toFixed(1),
-}));
+// Derive all computed fields from the raw array
+function buildData(raw) {
+  const data = raw.map(r => ({
+    name:    r[0],
+    sub:     r[1],
+    protein: r[2],             // g protein per 100 cal (provided)
+    cost:    r[3],             // $ per 100 cal (provided)
+    cat:     r[4],
+    special: r[5],
+    ppd:     +(r[2] / r[3]).toFixed(1),  // COMPUTED: g protein per $1
+  }));
 
-// Assign ranks across ALL 40 items
-[...data].sort((a,b) => b.protein - a.protein).forEach((d,i) => d.calRank = i+1);
-[...data].sort((a,b) => b.ppd - a.ppd).forEach((d,i) => d.dollarRank = i+1);
+  // COMPUTED: calorie rank (1 = highest protein/100cal)
+  [...data].sort((a,b) => b.protein - a.protein).forEach((d,i) => d.calRank = i + 1);
 
-// Normalize to 0–100
-const calMax = Math.max(...data.map(d=>d.protein)), calMin = Math.min(...data.map(d=>d.protein));
-const dolMax = Math.max(...data.map(d=>d.ppd)), dolMin = Math.min(...data.map(d=>d.ppd));
-data.forEach(d => {
-  d.calScore = +((d.protein - calMin)/(calMax - calMin)*100).toFixed(1);
-  d.dolScore = +((d.ppd - dolMin)/(dolMax - dolMin)*100).toFixed(1);
-});
+  // COMPUTED: budget rank (1 = highest protein/$)
+  [...data].sort((a,b) => b.ppd - a.ppd).forEach((d,i) => d.dollarRank = i + 1);
 
+  // COMPUTED: normalized scores 0–100
+  const calMax = Math.max(...data.map(d=>d.protein)), calMin = Math.min(...data.map(d=>d.protein));
+  const dolMax = Math.max(...data.map(d=>d.ppd)),    dolMin = Math.min(...data.map(d=>d.ppd));
+  data.forEach(d => {
+    d.calScore = +((d.protein - calMin) / (calMax - calMin) * 100).toFixed(1);
+    d.dolScore = +((d.ppd    - dolMin) / (dolMax - dolMin) * 100).toFixed(1);
+  });
+
+  return data;
+}
+
+const data = buildData(FOODS);
 let budgetWeight = 0.5;
 let activeFilter = 'all';
 
-function composite(d) { return +((1-budgetWeight)*d.calScore + budgetWeight*d.dolScore).toFixed(1); }
+// COMPUTED: composite score (recalculated on every slider move)
+function addComposite(data, w) {
+  data.forEach(d => {
+    d.comp = +((1 - w) * d.calScore + w * d.dolScore).toFixed(1);
+  });
+}
 
 function tierOf(s) {
   if (s >= 80) return ['S-Tier','tier-s'];
@@ -484,61 +383,35 @@ function tierOf(s) {
   return ['C-Tier','tier-c'];
 }
 
-function updateStats(sorted) {
-  const visible = sorted.filter(d => activeFilter === 'all' || d.cat === activeFilter);
-  if (!visible.length) return;
-  const best = visible[0];
-  document.getElementById('statBest').textContent = best.name.split(' ').slice(0,2).join(' ');
-  document.getElementById('statBestSub').textContent = `Score: ${best.comp.toFixed(1)}`;
-
-  const calBest = [...visible].sort((a,b) => b.protein - a.protein)[0];
-  document.getElementById('statCal').textContent = calBest.protein + 'g';
-  document.getElementById('statCalSub').textContent = calBest.name.split(' ').slice(0,2).join(' ');
-
-  const dolBest = [...visible].sort((a,b) => b.ppd - a.ppd)[0];
-  document.getElementById('statDol').textContent = dolBest.ppd + 'g';
-  document.getElementById('statDolSub').textContent = dolBest.name.split(' ').slice(0,2).join(' ');
-
-  const costcoRank = sorted.findIndex(d => d.special) + 1;
-  document.getElementById('statCostco').textContent = '#' + costcoRank;
-}
-
 function render() {
-  data.forEach(d => d.comp = composite(d));
+  addComposite(data, budgetWeight);
   const sorted = [...data].sort((a,b) => b.comp - a.comp);
-
-  const tbody = document.getElementById('tbody');
+  const tbody  = document.getElementById('tbody');
   tbody.innerHTML = '';
 
   let displayRank = 0;
   let visibleCount = 0;
 
-  sorted.forEach((row, globalIdx) => {
+  sorted.forEach((row, i) => {
     const show = activeFilter === 'all' || row.cat === activeFilter;
-    if (show) displayRank++;
-    if (show) visibleCount++;
+    if (show) { displayRank++; visibleCount++; }
 
-    const rank = show ? displayRank : '—';
     const [tlabel, tclass] = row.special ? ['★ Special','tier-special'] : tierOf(row.comp);
     const compColor = row.comp>=80?'var(--accent)':row.comp>=60?'#64dc64':row.comp>=40?'#ffc832':'var(--accent2)';
-    const topClass = (show && displayRank<=3) ? `top${displayRank}` : '';
-    const catColor = catColors[row.cat] || '#888';
+    const topClass  = show && displayRank <= 3 ? `top${displayRank}` : '';
+    const catColor  = CAT_COLORS[row.cat] || '#888';
 
     const tr = document.createElement('tr');
     if (topClass) tr.className = topClass;
-    if (!show) tr.classList.add('hidden');
+    if (!show)    tr.classList.add('hidden');
     if (row.special) tr.style.background = '#120d07';
-    tr.style.animationDelay = (globalIdx * 0.015) + 's';
-    tr.dataset.cat = row.cat;
-
-    const tags = (row.special ? '<span class="tag tag-special">$5 Bird</span>' : '') +
-                 (row.isNew ? '<span class="tag tag-new">NEW</span>' : '');
+    tr.style.animationDelay = (i * 0.014) + 's';
 
     tr.innerHTML = `
-      <td class="rank-cell">${show ? rank : '·'}</td>
+      <td class="rank-cell">${show ? displayRank : '·'}</td>
       <td>
         <div class="food-name">
-          <span class="cat-dot" style="background:${catColor}"></span>${row.name}${tags}
+          <span class="cat-dot" style="background:${catColor}"></span>${row.name}${row.special ? '<span class="tag tag-special">$5 Bird</span>' : ''}
         </div>
         <div class="food-sub">${row.sub}</div>
       </td>
@@ -551,27 +424,36 @@ function render() {
       <td><span class="tier-pill ${tclass}">${tlabel}</span></td>
       <td>
         <div class="bars-col">
-          <div class="bar-row">
-            <span class="bar-lbl c">C</span>
-            <div class="mini-bar"><div class="mini-fill-c" style="width:${row.calScore}%"></div></div>
-          </div>
-          <div class="bar-row">
-            <span class="bar-lbl d">$</span>
-            <div class="mini-bar"><div class="mini-fill-d" style="width:${row.dolScore}%"></div></div>
-          </div>
+          <div class="bar-row"><span class="bar-lbl c">C</span><div class="mini-bar"><div class="mini-fill-c" style="width:${row.calScore}%"></div></div></div>
+          <div class="bar-row"><span class="bar-lbl d">$</span><div class="mini-bar"><div class="mini-fill-d" style="width:${row.dolScore}%"></div></div></div>
         </div>
-      </td>
-    `;
+      </td>`;
     tbody.appendChild(tr);
   });
 
-  document.getElementById('countLine').textContent =
-    activeFilter === 'all' ? `Showing all 40 items` : `Showing ${visibleCount} of 40 items`;
-  updateStats(sorted);
+  // Update stats
+  const vis = sorted.filter(d => activeFilter === 'all' || d.cat === activeFilter);
+  if (vis.length) {
+    document.getElementById('statBest').textContent    = vis[0].name.split('(')[0].trim().split(' ').slice(0,3).join(' ');
+    document.getElementById('statBestSub').textContent = `Score: ${vis[0].comp.toFixed(1)}`;
+    const cb = [...vis].sort((a,b)=>b.protein-a.protein)[0];
+    document.getElementById('statCal').textContent    = cb.protein + 'g';
+    document.getElementById('statCalSub').textContent = cb.name.split('(')[0].trim().split(' ').slice(0,3).join(' ');
+    const db = [...vis].sort((a,b)=>b.ppd-a.ppd)[0];
+    document.getElementById('statDol').textContent    = db.ppd + 'g';
+    document.getElementById('statDolSub').textContent = db.name.split('(')[0].trim().split(' ').slice(0,3).join(' ');
+  }
+  const costcoRank = sorted.findIndex(d => d.special) + 1;
+  document.getElementById('statCostco').textContent   = '#' + costcoRank;
+  document.getElementById('totalCount').textContent   = data.length;
+  document.getElementById('countLine').textContent    =
+    activeFilter === 'all'
+      ? `Showing all ${data.length} items`
+      : `Showing ${visibleCount} of ${data.length} items`;
 }
 
 // Slider
-const slider = document.getElementById('slider');
+const slider   = document.getElementById('slider');
 const wDisplay = document.getElementById('wDisplay');
 slider.addEventListener('input', () => {
   budgetWeight = slider.value / 100;
